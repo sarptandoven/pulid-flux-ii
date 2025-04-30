@@ -1,0 +1,255 @@
+{
+  "last_node_id": 8,
+  "last_link_id": 8,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "LoadImage",
+      "position": {
+        "x": -400,
+        "y": -200
+      },
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [2],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "input.jpg",
+        "image"
+      ]
+    },
+    {
+      "id": 2,
+      "type": "PuLIDIdentityEncoder",
+      "position": {
+        "x": -100,
+        "y": -200
+      },
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 2
+        }
+      ],
+      "outputs": [
+        {
+          "name": "identity",
+          "type": "IDENTITY",
+          "links": [3],
+          "slot_index": 0
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "FluxModelLoader",
+      "position": {
+        "x": 200,
+        "y": -200
+      },
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [4],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "FluxModelLoader"
+      },
+      "widgets_values": [
+        "flux_v2.safetensors"
+      ]
+    },
+    {
+      "id": 4,
+      "type": "PuLIDIdentityInjector",
+      "position": {
+        "x": 500,
+        "y": -200
+      },
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "identity",
+          "type": "IDENTITY",
+          "link": 3
+        },
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 4
+        }
+      ],
+      "outputs": [
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "links": [5],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PuLIDIdentityInjector"
+      },
+      "widgets_values": [
+        "Professional headshot portrait, centered, looking at camera, upper body, corporate style, confident expression, clean background, sharp focus, natural skin tone, professional lighting, high quality, realistic, no text, no watermark"
+      ]
+    },
+    {
+      "id": 5,
+      "type": "FirstBlockCache",
+      "position": {
+        "x": 800,
+        "y": -200
+      },
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 6
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 5
+        }
+      ],
+      "outputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "links": [7],
+          "slot_index": 0
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "type": "KSampler",
+      "position": {
+        "x": 1100,
+        "y": -200
+      },
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 7
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 8
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [9],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "KSampler"
+      },
+      "widgets_values": [
+        "dpmpp_2m",
+        20,
+        7.5,
+        "enable"
+      ]
+    },
+    {
+      "id": 7,
+      "type": "VAEDecode",
+      "position": {
+        "x": 1400,
+        "y": -200
+      },
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 9
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [10],
+          "slot_index": 0
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "type": "SaveImage",
+      "position": {
+        "x": 1700,
+        "y": -200
+      },
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 10
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "SaveImage"
+      },
+      "widgets_values": [
+        "headshot_output"
+      ]
+    }
+  ],
+  "links": [
+    [2, 1, 0, 2, 0, "IMAGE"],
+    [3, 2, 0, 4, 0, "IDENTITY"],
+    [4, 3, 0, 4, 1, "MODEL"],
+    [5, 4, 0, 5, 1, "CONDITIONING"],
+    [6, 3, 0, 5, 0, "MODEL"],
+    [7, 5, 0, 6, 0, "MODEL"],
+    [8, 4, 0, 6, 1, "CONDITIONING"],
+    [9, 6, 0, 7, 0, "LATENT"],
+    [10, 7, 0, 8, 0, "IMAGE"]
+  ]
+} 

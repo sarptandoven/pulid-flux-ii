@@ -1,0 +1,23 @@
+build:
+  gpu: true
+  system_packages:
+    - "libgl1-mesa-glx"
+    - "libglib2.0-0"
+  python_version: "3.10"
+  python_packages:
+    - "torch>=2.0.0"
+    - "torchvision>=0.15.0"
+    - "transformers>=4.30.0"
+    - "accelerate>=0.20.0"
+    - "safetensors>=0.3.1"
+    - "pillow>=9.5.0"
+    - "numpy>=1.24.0"
+    - "tqdm>=4.65.0"
+    - "opencv-python>=4.7.0"
+    - "scipy>=1.10.0"
+    - "einops>=0.6.1"
+    - "sentencepiece>=0.1.99"
+    - "protobuf>=3.20.0"
+    - "comfyui-pulid-flux-ll @ git+https://github.com/yourusername/ComfyUI_PuLID_Flux_ll.git"
+
+predict: "predict.py" 
